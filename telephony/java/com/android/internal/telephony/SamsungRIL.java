@@ -767,10 +767,16 @@ public class SamsungRIL extends RIL implements CommandsInterface {
         int numInts = 12;
         int response[];
 
+        int oldRil = SystemProperties.getInt("ro.telephony.ril.v3", 0);
+
         /* TODO: Add SignalStrength class to match RIL_SignalStrength */
         response = new int[numInts];
         for (int i = 0 ; i < numInts ; i++) {
-            response[i] = p.readInt();
+            if (oldRil != 0 && i > 6 && i < 12) {
+                response[i] = -1;
+            } else {
+                response[i] = p.readInt();
+            }
         }
 
         /* Matching Samsung signal strength to asu.
